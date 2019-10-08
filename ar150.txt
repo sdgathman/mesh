@@ -1,0 +1,45 @@
+ssh root@192.168.8.1
+...
+# : connect wan or wifi to internet
+# opkg update
+# opkg install kmod-batman-adv
+# opkg install batctl
+# cd /etc/config
+
+----%<---/etc/config/wireless----%<--------
+config wifi-device 'radio0'
+	option type 'mac80211'
+	option path 'platform/ar933x_wmac'
+	option htmode 'HT20'
+	option disabled '0'
+	option channel '1'
+	option hwmode '11g'
+	option txpower '18'
+	option country 'US'
+
+config wifi-iface
+	option ifname 'mesh0'
+	option network 'mesh'
+	option ssid 'chantilly-mesh'
+	option encryption 'none'
+	option device 'radio0'
+	option mode 'adhoc'
+	option mcast_rate '18000'
+
+----%<---/etc/config/network----%<--------
+.
+.
+.
+
+config interface 'mesh'
+	option mtu      '1532'
+        option proto    'batadv'
+        option mesh     'bat0'
+
+config interface 'bat'
+        option ifname 'bat0'
+        option proto 'static'
+        option mtu '1500'
+        option ipaddr '10.0.0.1'
+        option netmask '255.0.0.0'
+
