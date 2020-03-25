@@ -8,18 +8,131 @@
 
 <h4 align="center">Prepare for the inevitable, and have fun doing it!</h4>
 <h4 align="center">Stuart D. Gathman &lt;stuart@gathman.org&gt;</h4>
-<h4>Last updated: Jan  4, 2019</h4>
+<h4>Last updated: Mar 25, 2020</h4>
 
 Originally begun as a part (one I know something about) of responding to the 
 <a href="emp.html">threat of EMP</a>, Chantilly MESH is a challenging
-project in its own right, and extremely important for decentralization as well.
+project in its own right, and extremely important for decentralization 
+in general.
 
 <h3> What is a MESH Network? </h3>
 
+If your device has multiple "peers" (connections to different nodes),
+any of which can reach any other node in the network, it is part
+of a mesh.  A typical internet consumer has only one connection to an ISP
+(Internet Service Provider).  Or they might connect to a wifi router, which
+then has only one "upstream" connection (that can reach the rest of the
+internet) to an ISP.  The internet backbone forms a mesh, because 
+the backbone nodes have multiple peers - so that the rest of the
+internet remains accessible when a node goes down or is disconnected.
+A well connected ISP will also have multiple "peerings" (connections 
+to the backbone).
+<p>
+The goal of this project is to interest people in a local mesh for
+Chantilly, VA which connects homes and businesses in a neighborhood.  The cost
+is trivial, a
+<a href="https://www.amazon.com/GL-iNet-Pre-installed-Performance-Compatible-Programmable/dp/B01FJ4S9JK/">basic router</a> capable of running the mesh
+protocols is $26.  The difficulty is in explaining the benefit to neighbors.
+
+<h3> Design of Chantilly Mesh </h3>
+
+The base mesh protocol is BATMAN-ADV.  This is a "layer-2" protocol that
+scales to about 1000 nodes.  Layer-2 means it is like a neighborhood
+wide local LAN.  The layer 3 protocols that run on top can connect
+neighborhoods, or to the global internet.  The LAN itself does not connect to
+the internet.  Joining the LAN should not entail any liability 
+involved in connecting to the internet should someone do something
+illegal (but I Am Not A Lawyer - I will
+try to link some sites discussing legal aspects of mesh networks).
+<p>
+Since non-technical users won't know how to install BATMAN-ADV protocol,
+the routers also offer a common WiFi Access Point with SSID "chantilly-meshap".
+Users can connect to any of the WAPs to access the mesh LAN.
+<p>
+The mesh LAN is, of course, <emph>untrusted</emph>.  Some of the neighbors
+or people walking by may be Not Nice.  This is no different that using
+the Wifi at a restaurant.
+<p>
+BATMAN-ADV is link agnostic.  Nodes can be connected via Ad-hoc Wifi,
+wired ethernet, a Wifi AP or client, or something geeky like an infrared
+link.  The ad-hoc WiFi SSID is "chantilly-mesh".
+<p>
+Currently, the ad-hoc Wifi and WAPs are unencrypted.  There seemed little point
+since the key would need to be advertised and widely known.  But 
+some people have advised me that it can help legally to have it
+encrypted - even if somewhat pointlessly.  This will be done by
+using an SSID of "chantilly-emesh" for the encrypted ad-hoc WiFi,
+and simply adding a password to any WAPs that wish to.  The encrypted
+and unencrypted ad-hoc links can co-exist just fine on the BATMAN-ADV
+mesh.
+
+<h4> IPv4 </h4>
+
+There is a 10.0.0.0/8 network for the LAN.  There is no long term goal of
+coordinating IPs.  IP4 is obsolete, and IPv6 has better tools for doing this
+without a central authority.  Anyone is free to put a DHCP4 server on the LAN,
+and many devices will use any results.  I suggest a unique 10.0.0.0/24 for each
+WAP or administrative domain (family) connected to the MESH.  Sending out a
+DHCP4 request and monitoring LAN traffic should show what is already used.  If
+this gets popular and that gets unwieldy, we will have a paper registry of
+10.0.0 networks.  But really, IPv4 is obsolete.
+
+<h4> IPv6 </h4>
+
+Routers have a unique IPv6 network in the FD00::/8 range tied to their MAC
+address.  These will be advertised by default.  Devices use the variety
+of methods for host part assignment provided by IPv6.  E.g. SLAAC, CGA,
+Privacy Enhanced (random), DHCP6, static assignment by a human.  This
+makes all devices on the LAN reachable by IPv6 with zero configuration
+(unless you are using static assignment).
+
+<h4> Cjdns </h4>
+
+Cjdns is an <a href="https://github.com/cjdelisle/cjdns">IPv6 mesh
+VPN protocol</a>.  Nodes will automatically find peers on the LAN
+by default, so there is zero configuration.  The address of a node
+is the cryptographic hash of an elliptic curve public key in
+the FC00::/8 range.  This is a variation on CGA address assignment.
+Packages are available for at least Fedora linux, Apple Mac, Windows.
+This will connect you to Hyperboria - a <emph>global</emph> VPN mesh.
+As the packets are end to end encrypted, and complete opaque to relay
+nodes, this should also not entail any legal liability - but again IANAL.
+<p>
+A Cjdns node can provide a tunnel to "clearnet" (the familiar global
+internet).  This can be a secure way for savvy users to access the 
+internet through their home ISP (or any other Cjdns node that grants
+their public key access) from anywhere on the mesh LAN (or anywhere
+else in the world).  There are even VPN companies that do this commercially.
+
+<h4> Internet Gateways </h4>
+
+Someone may want to offer an internet gateway, like you would find
+in a coffeeshop or library.  This is done by simply advertising a default route
+via DHCP4 and/or DHCP6.  Clients will generally use the first DHCP offer they
+receive - and this will generally be the closest.  
+<p>
+As this is in the US, gateway admins are advised to implement 
+a captive web portal which makes clients click a button that says,
+"I promise not to do anything illegal in the US or State of Virginia 
+via this internet connection."  (Check, e.g. the wifi at a public library for
+the full legal text of such an agreement.)  You could also have a paywall,
+if you wanted to be annoying - Cjdns is the better protocol for paid access
+to clearnet from the mesh LAN as mentioned above.
+
 <h3> Applications </h3>
 
-<a href="Meshnet_Campaign.html">Adam's notes</a> on decentralized
+<menu>
+<li> <a href="Meshnet_Campaign.html">Adam's notes</a> on decentralized
 applications, and incremental steps in that direction.
+
+<li> <a href="https://git.p2p.legal/axiom-team/astroport">Astroport</a> - a
+decentralized application stack.
+
+<li> <a href="https://scuttlebutt.nz/">Secure ScuttleButt</a> - a
+fully decentralized facebook/twitter workalike.  Like Cjdns, this works with
+zero configuration when there are other SSB nodes active on the LAN.
+
+</menu>
 
 </body>
 </html>
