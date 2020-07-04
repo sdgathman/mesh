@@ -118,6 +118,18 @@ via this internet connection."  (Check, e.g. the wifi at a public library for
 the full legal text of such an agreement.)  You could also have a paywall,
 if you wanted to be annoying - Cjdns is the better protocol for paid access
 to clearnet from the mesh LAN as mentioned above.
+<p>
+As mentioned before, the mesh is untrusted.  This is particularly important
+for naive users of an internet gateway.  A gateway operator might provide DNS
+service, and the DNS service they provide can lie.  Or be misconfigured.  Or
+get hacked.  This can and does happen with coffeeshop WiFi also.  
+The SSL (e.g. https) and TLS protocols are designed to verify the endpoint
+of a connection, despite lying/broken DNS servers.  
+<p>
+Somewhat offtopic, but SSL/TLS has been subverted by CDNs (Content
+Distribution Networks), and you can't rely on it for authentication either.
+This is another reason not to use centralized services - but difficult
+to explain to neighbors.
 
 <h3> Applications </h3>
 
